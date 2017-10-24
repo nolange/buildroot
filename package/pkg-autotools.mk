@@ -176,7 +176,11 @@ $(2)_INSTALL_TARGET_OPTS		?= DESTDIR=$$(TARGET_DIR) install
 ifndef $(2)_CONFIGURE_CMDS
 ifeq ($(4),target)
 
-#DEB_HOST_MULTIARCH := x86_64-linux-gnu
+BR2_LIBDIR := lib
+# BR2_LIBDIR := lib/x86_64-linux-gnu
+BR2_LIBEXECDIR := $(BR2_LIBDIR)
+
+
 # Configure package for target
 define $(2)_CONFIGURE_CMDS
 	(cd $$($$(PKG)_SRCDIR) && rm -rf config.cache && \
@@ -200,7 +204,10 @@ define $(2)_CONFIGURE_CMDS
 		--disable-documentation \
 		--with-xmlto=no \
 		--with-fop=no \
-		$$(if $$(DEB_HOST_MULTIARCH),--libdir=\$$$${prefix}/lib/$(DEB_HOST_MULTIARCH)) \
+		$$(if $$(BR2_LIBDIR),--libdir=\$$$${prefix}/$$(BR2_LIBDIR)) \
+		$$(addprefix --libexecdir=\$$$${prefix}/, \
+			$$(or $$($$(PKG)_OVERRIDE_LIBEXECDIR),$$(BR2_LIBEXECDIR)) \
+			) \
 		$$(if $$($$(PKG)_OVERRIDE_SRCDIR),,--disable-dependency-tracking) \
 		--enable-ipv6 \
 		$$(NLS_OPTS) \
@@ -208,6 +215,9 @@ define $(2)_CONFIGURE_CMDS
 		$$(QUIET) $$($$(PKG)_CONF_OPTS) \
 	)
 endef
+
+$(2)_LIBEXECDIR = $$(or $$($$(PKG)_OVERRIDE_LIBEXECDIR),$$(BR2_LIBEXECDIR))
+
 else
 
 # Configure package for host

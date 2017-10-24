@@ -9,9 +9,10 @@ DBUS_SITE = https://dbus.freedesktop.org/releases/dbus
 DBUS_LICENSE = AFL-2.1 or GPL-2.0+ (library, tools), GPL-2.0+ (tools)
 DBUS_LICENSE_FILES = COPYING
 DBUS_INSTALL_STAGING = YES
+DBUS_OVERRIDE_LIBEXECDIR = lib/dbus-1.0
 
 define DBUS_PERMISSIONS
-	/usr/libexec/dbus-daemon-launch-helper f 4750 0 dbus - - - - -
+	/usr/$(DBUS_OVERRIDE_LIBEXECDIR)/dbus-daemon-launch-helper f 4750 0 dbus - - - - -
 endef
 
 define DBUS_USERS

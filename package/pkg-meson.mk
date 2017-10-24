@@ -71,7 +71,10 @@ define $(2)_CONFIGURE_CMDS
 	    > $$($$(PKG)_SRCDIR)/build/cross-compilation.conf
 	PATH=$$(BR_PATH) $$($$(PKG)_CONF_ENV) $$(MESON) \
 		--prefix=/usr \
-		--libdir=lib \
+		$$(if $$(BR2_LIBDIR),--libdir=$$(BR2_LIBDIR)) \
+		$$(addprefix --libexecdir=, \
+			$$(or $$($$(PKG)_OVERRIDE_LIBEXECDIR),$$(BR2_LIBEXECDIR)) \
+			) \
 		--default-library=$(if $(BR2_STATIC_LIBS),static,shared) \
 		--buildtype=$(if $(BR2_ENABLE_DEBUG),debug,release) \
 		--cross-file=$$($$(PKG)_SRCDIR)/build/cross-compilation.conf \
