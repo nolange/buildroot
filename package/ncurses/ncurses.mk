@@ -73,7 +73,7 @@ NCURSES_CONF_OPTS += --without-shared --with-normal
 else ifeq ($(BR2_SHARED_LIBS),y)
 NCURSES_CONF_OPTS += --with-shared --without-normal
 else ifeq ($(BR2_SHARED_STATIC_LIBS),y)
-NCURSES_CONF_OPTS += --with-shared --with-normal
+NCURSES_CONF_OPTS += --without-shared --with-normal
 endif
 
 # configure can't find the soname for libgpm when cross compiling
