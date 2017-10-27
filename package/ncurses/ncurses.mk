@@ -50,6 +50,9 @@ NCURSES_PATCH = \
 		ncurses-6.1-20200118.patch.gz \
 	)
 
+NCURSES_CFLAGS_EXTRA = -fPIC
+NCURSES_CXXFLAGS_EXTRA = -fPIC
+
 NCURSES_CONF_OPTS = \
 	--without-cxx \
 	--without-cxx-binding \
