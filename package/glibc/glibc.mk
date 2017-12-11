@@ -127,6 +127,7 @@ define GLIBC_CONFIGURE_CMDS
 		--host=$(GNU_TARGET_NAME) \
 		--build=$(GNU_HOST_NAME) \
 		--prefix=/usr \
+		$(if $(DEB_HOST_MULTIARCH),--libdir=\$${prefix}/lib/$(DEB_HOST_MULTIARCH)) \
 		--enable-shared \
 		$(if $(BR2_x86_64),--enable-lock-elision) \
 		--with-pkgversion="Buildroot" \
