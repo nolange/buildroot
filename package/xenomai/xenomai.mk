@@ -59,7 +59,7 @@ XENOMAI_CONF_OPTS += $(call qstrip,$(BR2_PACKAGE_XENOMAI_ADDITIONAL_CONF_OPTS))
 # Some of these files may be desired by some users -- at that point specific
 # config options need to be added to keep a particular set.
 define XENOMAI_REMOVE_UNNEEDED_FILES
-	for i in xeno xeno-config xeno-info wrap-link.sh ; do \
+	for i in xeno xeno-info ; do \
 		rm -f $(TARGET_DIR)/usr/bin/$$i ; \
 	done
 	for i in cobalt modechk ; do \
@@ -71,7 +71,17 @@ define XENOMAI_REMOVE_UNNEEDED_FILES
 	done
 endef
 
-XENOMAI_POST_INSTALL_TARGET_HOOKS += XENOMAI_REMOVE_UNNEEDED_FILES
+define XENOMAI_MOVE_HOST_FILES
+	for i in xeno-config wrap-link.sh ; do \
+		mv $(TARGET_DIR)/usr/bin/$$i $(HOST_DIR)/usr/bin/$$i; \
+	done
+#	for i in autotune corectl hdb rtnet nomaccfg rtcfg rtifconfig \
+#		rtiwconfig rtping rtroute tdmacfg rtps slackspot version; do \
+#		rm -f $(TARGET_DIR)/usr/sbin/$$i ; \
+#	done
+endef
+
+XENOMAI_POST_INSTALL_TARGET_HOOKS += XENOMAI_MOVE_HOST_FILES
 
 ifeq ($(BR2_PACKAGE_XENOMAI_TESTSUITE),)
 define XENOMAI_REMOVE_TESTSUITE
