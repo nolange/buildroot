@@ -247,6 +247,8 @@ else
 CMAKE_SYSTEM_PROCESSOR = $(BR2_ARCH)
 endif
 
+_cmake_creategenexp = $(if $(filter -D%,$(2)),\$$<\$$<COMPILE_LANGUAGE:$(1)>:$(subst $(space),,$(addprefix \$$<SEMICOLON>,$(filter -D%,$(2))))>)
+
 # In order to allow the toolchain to be relocated, we calculate the HOST_DIR
 # based on the toolchainfile.cmake file's location: $(HOST_DIR)/share/buildroot
 # In all the other variables, HOST_DIR will be replaced by RELOCATED_HOST_DIR,
@@ -257,6 +259,10 @@ define TOOLCHAIN_CMAKE_INSTALL_FILES
 		-e 's#@@STAGING_SUBDIR@@#$(call qstrip,$(STAGING_SUBDIR))#' \
 		-e 's#@@TARGET_CFLAGS@@#$(call qstrip,$(TARGET_CFLAGS))#' \
 		-e 's#@@TARGET_CXXFLAGS@@#$(call qstrip,$(TARGET_CXXFLAGS))#' \
+		-e 's#@@TARGET_CFLAGS_ND@@#$(filter-out -D%,$(call qstrip,$(TARGET_CFLAGS)))#' \
+		-e 's#@@TARGET_CXXFLAGS_ND@@#$(filter-out -D%,$(call qstrip,$(TARGET_CXXFLAGS)))#' \
+		-e 's#@@TARGET_CDEFINES@@#$(call _cmake_creategenexp,C,$(call qstrip,$(TARGET_CFLAGS)))#' \
+		-e 's#@@TARGET_CXXDEFINES@@#$(call _cmake_creategenexp,CXX,$(call qstrip,$(TARGET_CXXFLAGS)))#' \
 		-e 's#@@TARGET_FCFLAGS@@#$(call qstrip,$(TARGET_FCFLAGS))#' \
 		-e 's#@@TARGET_LDFLAGS@@#$(call qstrip,$(TARGET_LDFLAGS))#' \
 		-e 's#@@TARGET_CC@@#$(subst $(HOST_DIR)/,,$(call qstrip,$(TARGET_CC)))#' \

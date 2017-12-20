@@ -36,18 +36,30 @@ set(CMAKE_CXX_FLAGS_RELEASE " -DNDEBUG" CACHE STRING "Release CXXFLAGS")
 # Build type from the Buildroot configuration
 set(CMAKE_BUILD_TYPE @@CMAKE_BUILD_TYPE@@ CACHE STRING "Buildroot build configuration")
 
-# Buildroot defaults flags.
-# If you are using this toolchainfile.cmake file outside of Buildroot and
-# want to customize the compiler/linker flags, then:
-# * set them all on the cmake command line, e.g.:
-#     cmake -DCMAKE_C_FLAGS="@@TARGET_CFLAGS@@ -Dsome_custom_flag" ...
-# * and make sure the project's CMake code extends them like this if needed:
-#     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Dsome_definitions")
-set(CMAKE_C_FLAGS "@@TARGET_CFLAGS@@" CACHE STRING "Buildroot CFLAGS")
-set(CMAKE_CXX_FLAGS "@@TARGET_CXXFLAGS@@" CACHE STRING "Buildroot CXXFLAGS")
-set(CMAKE_EXE_LINKER_FLAGS "@@TARGET_LDFLAGS@@" CACHE STRING "Buildroot LDFLAGS for executables")
-set(CMAKE_SHARED_LINKER_FLAGS "@@TARGET_LDFLAGS@@" CACHE STRING "Buildroot LDFLAGS for shared libraries")
-set(CMAKE_MODULE_LINKER_FLAGS "@@TARGET_LDFLAGS@@" CACHE STRING "Buildroot LDFLAGS for module libraries")
+# Defaults are fitting for Debug and Release builds
+# Remaining settings can be seeded by using the *_INIT variables
+# The *_INIT variables have been around forever, even if they are
+# only documented since 3.7
+
+# TODO: potentially set global Makros via add_definitions, much cleaner
+# these might require generator expressions for the various languages
+
+set(CMAKE_C_FLAGS_INIT "@@TARGET_CFLAGS@@")
+set(CMAKE_CXX_FLAGS_INIT "@@TARGET_CXXFLAGS@@")
+set(CMAKE_EXE_LINKER_FLAGS_INIT "@@TARGET_LDFLAGS@@")
+set(CMAKE_SHARED_LINKER_FLAGS_INIT "@@TARGET_LDFLAGS@@")
+set(CMAKE_MODULE_LINKER_FLAGS_INIT "@@TARGET_LDFLAGS@@")
+
+#@@TARGET_CFLAGS_ND@@
+#@@TARGET_CXXFLAGS_ND@@
+# Add definitions, The more fitting add_definitions() does not support
+# generator expressions
+if(CMAKE_VERSION VERSION_LESS "3.3.0")
+else()
+# $<COMPILE_LANGUAGE:lang> supported since CMake 3.3
+#add_compile_options(@@TARGET_CDEFINES@@)
+#add_compile_options(@@TARGET_CXXDEFINES@@)
+endif()
 
 set(CMAKE_INSTALL_SO_NO_EXE 0)
 
