@@ -1,0 +1,29 @@
+config BR2_PACKAGE_LIBCXX
+	bool "libc++"
+	depends on BR2_INSTALL_LIBSTDCPP
+	help
+	  libc++ is a new implementation of the C++ standard library,
+	  targeting C++11 (and newer). Part of the LLVM Project.
+
+	  The LLVM Project is a collection of modular and reusable
+	  compiler and toolchain technologies.
+
+if BR2_PACKAGE_LIBCXX
+choice
+	prompt "libc++ abi support"
+	default BR2_PACKAGE_LIBCXX_ABI_SUPCXX
+	help
+	  Select the c++ abi support: libsupc++ (from gcc toolchain)
+	  or libc++-abi (from llvm).
+
+config BR2_PACKAGE_LIBCXX_ABI_SUPCXX
+	bool "libsupc++"
+
+config BR2_PACKAGE_LIBCXX_ABI_CXXABI
+	bool "libc++-abi"
+
+endchoice
+endif
+
+comment "libc++ needs a toolchain w/ C++"
+	depends on !BR2_INSTALL_LIBSTDCPP
