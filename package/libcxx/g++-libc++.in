@@ -1,0 +1,16 @@
+#!/bin/sh
+SCRIPTPATH=$(readlink -f "$(dirname "$0")")
+cxx_libs="-lc++ @link_abi@"
+c_libs="-lc -lm @link_comrt@"
+pthread_libs="-lpthread $c_libs"
+
+libs="$cxx_libs $c_libs"
+
+for i; do
+    if test x"$i" = x"-pthread"; then
+        libs="$libs $pthread_libs"
+        break
+    fi
+done
+
+exec "$SCRIPTPATH"/@TARGET_CROSS@g++ -nodefaultlibs -nostdinc++ -isystem"$SCRIPTPATH"/../../staging/usr/include/c++/v1 "$@" $libs
