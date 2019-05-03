@@ -25,7 +25,7 @@
 # $(HOST_DIR)/bin/python3 will not look for Meson modules in
 # $HOME/.local/lib/python3.x/site-packages
 #
-MESON		= PYTHONNOUSERSITE=y $(HOST_DIR)/bin/meson
+MESON		= PYTHONNOUSERSITE=y $(BR2_MESON)
 NINJA		= PYTHONNOUSERSITE=y $(HOST_DIR)/bin/ninja
 NINJA_OPTS	= $(if $(VERBOSE),-v) -j$(PARALLEL_JOBS)
 
@@ -99,7 +99,7 @@ endef
 endif
 endif
 
-$(2)_DEPENDENCIES += host-meson
+$(2)_DEPENDENCIES += $(BR2_MESON_HOST_DEPENDENCY)
 
 #
 # Build step. Only define it if not already defined by the package .mk
