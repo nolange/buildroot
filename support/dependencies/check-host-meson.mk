@@ -9,7 +9,7 @@ BR2_MESON ?= $(call suitable-host-package,meson,\
 	$(BR2_MESON_VERSION_MIN) $(BR2_MESON_CANDIDATES))
 ifeq ($(BR2_MESON),)
 BR2_MESON = $(HOST_DIR)/bin/meson
-BR2_MESON_HOST_DEPENDENCY = host-meson host-ninja
+BR2_MESON_HOST_DEPENDENCY = host-meson $(BR2_NINJA_HOST_DEPENDENCY)
 else
-BR2_MESON_HOST_DEPENDENCY = host-ninja
+BR2_MESON_HOST_DEPENDENCY = $(BR2_NINJA_HOST_DEPENDENCY)
 endif
