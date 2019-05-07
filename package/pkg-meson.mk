@@ -26,7 +26,7 @@
 # $HOME/.local/lib/python3.x/site-packages
 #
 MESON		= PYTHONNOUSERSITE=y $(BR2_MESON)
-NINJA		= PYTHONNOUSERSITE=y $(HOST_DIR)/bin/ninja
+NINJA		= PYTHONNOUSERSITE=y $(BR2_NINJA)
 NINJA_OPTS	= $(if $(VERBOSE),-v) -j$(PARALLEL_JOBS)
 
 ################################################################################
