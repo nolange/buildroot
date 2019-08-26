@@ -11,6 +11,12 @@ TFTPD_CONF_OPTS = --without-tcpwrappers
 TFTPD_LICENSE = BSD-4-Clause
 TFTPD_LICENSE_FILES = tftpd/tftpd.c
 
+ifeq ($(BR2_PACKAGE_TFTPD_IPV6),y)
+TFTPD_CONF_OPTS += --with-ipv6
+else
+TFTPD_CONF_OPTS += --without-ipv6
+endif
+
 define TFTPD_INSTALL_TARGET_CMDS
 	$(INSTALL) -D $(@D)/tftp/tftp $(TARGET_DIR)/usr/bin/tftp
 	$(INSTALL) -D $(@D)/tftpd/tftpd $(TARGET_DIR)/usr/sbin/tftpd
