@@ -4,11 +4,11 @@
 # - Buildroot's 'target' is Meson's 'host'
 
 [binaries]
-c = '@TARGET_CROSS@gcc'
-cpp = '@TARGET_CROSS@g++'
-ar = '@TARGET_CROSS@ar'
-strip = '@TARGET_CROSS@strip'
-pkgconfig = '@HOST_DIR@/bin/pkgconf'
+c = '@TARGET_CC@'
+cpp = '@TARGET_CXX@'
+ar = '@TARGET_AR@'
+strip = '@TARGET_STRIP@'
+pkgconfig = '@PKG_CONFIG_HOST_BINARY@'
 
 [properties]
 needs_exe_wrapper = true
