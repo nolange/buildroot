@@ -1884,6 +1884,7 @@ F:	package/tpm-tools/
 F:	package/trousers/
 
 N:	Norbert Lange <nolange79@gmail.com>
+F:	package/dbusbroker/
 F:	package/tcf-agent/
 
 N:	Nylon Chen <nylon7@andestech.com>

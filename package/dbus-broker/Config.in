@@ -1,0 +1,35 @@
+config BR2_PACKAGE_DBUS_BROKER
+	bool "dbus-broker"
+	depends on BR2_USE_MMU
+	depends on BR2_TOOLCHAIN_HAS_THREADS
+	help
+	  Linux D-Bus Message Broker.
+
+	  The dbus-broker project is an implementation of a message bus
+	  as defined by the D-Bus specification. Its aim is to provide
+	  high performance and reliability, while keeping compatibility
+	  to the D-Bus reference implementation.
+
+	  It is exclusively written for Linux systems, and makes use of
+	  many modern features provided by recent linux kernel releases.
+
+	  https://github.com/bus1/dbus-broker/wiki
+
+if BR2_PACKAGE_DBUS_BROKER
+config BR2_PACKAGE_DBUS_BROKER_LAUNCH
+	bool "dbus-broker-launch"
+	default y
+	depends on BR2_INIT_SYSTEMD
+	select BR2_PACKAGE_EXPAT
+	help
+	  Launcher for D-Bus Message Brokers.
+
+	  dbus-broker-launch is a launcher for dbus-broker, spawning and
+	  managing a D-Bus Message Bus. The launcher aims to be fully
+	  compatible to the D-Bus reference implementation dbus-daemon,
+	  supporting the same configuration syntax and runtime environment.
+endif
+
+comment "dbus-broker needs a toolchain w/ threads"
+	depends on BR2_USE_MMU
+	depends on !BR2_TOOLCHAIN_HAS_THREADS
