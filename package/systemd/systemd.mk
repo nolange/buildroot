@@ -567,6 +567,16 @@ define SYSTEMD_PRESET_ALL
 endef
 SYSTEMD_ROOTFS_PRE_CMD_HOOKS += SYSTEMD_PRESET_ALL
 
+define SYSTEMD_UPDATE_CATALOGS
+	$(HOST_DIR)/bin/journalctl --root=$(TARGET_DIR) --update-catalog
+endef
+
+# SYSTEMD_UPDATE_CATALOGS needs to run after PURGE_LOCALES
+ifeq ($(BR2_ENABLE_LOCALE_PURGE),y)
+SYSTEMD_TARGET_FINALIZE_HOOKS += PURGE_LOCALES
+endif
+SYSTEMD_TARGET_FINALIZE_HOOKS += SYSTEMD_UPDATE_CATALOGS
+
 SYSTEMD_CONF_ENV = $(HOST_UTF8_LOCALE_ENV)
 SYSTEMD_NINJA_ENV = $(HOST_UTF8_LOCALE_ENV)
 
@@ -656,6 +666,7 @@ HOST_SYSTEMD_DEPENDENCIES = \
 #   $(HOST_DIR)/lib
 # * thus re-tweak rpath after the installation for all binaries that need it
 HOST_SYSTEMD_HOST_TOOLS = \
+	journalctl \
 	systemd-analyze \
 	systemd-machine-id-setup \
 	systemd-mount \
