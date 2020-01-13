@@ -603,6 +603,12 @@ SYSTEMD_TARGET_FINALIZE_HOOKS += PURGE_LOCALES
 endif
 SYSTEMD_TARGET_FINALIZE_HOOKS += SYSTEMD_UPDATE_CATALOGS
 
+define SYSTEMD_CREATE_TMPFILES_HOOK
+	$(HOST_DIR)/bin/systemd-tmpfiles --root=$(TARGET_DIR) --create --boot \
+		$(addprefix --exclude-prefix=/,dev mnt proc run sys tmp) || :
+endef
+SYSTEMD_ROOTFS_PRE_CMD_HOOKS += SYSTEMD_CREATE_TMPFILES_HOOK
+
 SYSTEMD_CONF_ENV = $(HOST_UTF8_LOCALE_ENV)
 SYSTEMD_NINJA_ENV = $(HOST_UTF8_LOCALE_ENV)
 
@@ -656,7 +662,7 @@ HOST_SYSTEMD_CONF_OPTS = \
 	-Dvconsole=false \
 	-Dquotacheck=false \
 	-Dsysusers=false \
-	-Dtmpfiles=false \
+	-Dtmpfiles=true \
 	-Dimportd=false \
 	-Dhwdb=false \
 	-Drfkill=false \
