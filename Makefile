@@ -709,6 +709,14 @@ define PURGE_LOCALES
 			fi \
 		done; \
 	done
+	for cfile in $(wildcard $(TARGET_DIR)/usr/lib/systemd/catalog/*.catalog); \
+	do \
+		basename=$${cfile##*/}; \
+		basename=$${basename%.catalog}; \
+		langext=$${basename#*.}; \
+		[ "$$langext" != "$${basename}" ] || continue; \
+		grep -qx "$${langext}" $(LOCALE_WHITELIST) || rm -f "$$cfile"; \
+	done
 	if [ -d $(TARGET_DIR)/usr/share/X11/locale ]; \
 	then \
 		for lang in $(LOCALE_NOPURGE); \
