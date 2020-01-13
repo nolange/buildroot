@@ -84,7 +84,7 @@ define OPENSSH_INSTALL_SYSTEMD_SYSUSERS
 endef
 else
 define OPENSSH_USERS
-	sshd -1 sshd -1 * $(if $(BR2_PACKAGE_SYSTEMD),/run/sshd,/var/empty) - - SSH drop priv user
+	sshd -2 sshd -2 * $(if $(BR2_PACKAGE_SYSTEMD),/run/sshd,/var/empty) - - SSH drop priv user
 endef
 endif
 
