@@ -463,6 +463,16 @@ ifneq ($(SYSTEMD_FALLBACK_HOSTNAME),)
 SYSTEMD_CONF_OPTS += -Dfallback-hostname=$(SYSTEMD_FALLBACK_HOSTNAME)
 endif
 
+ifneq ($(BR2_PACKAGE_SYSTEMD_RETAIN_CATALOGS),y)
+define SYSTEMD_RM_SOURCE_CATALOGS_HOOK
+	rm -rf $(TARGET_DIR)/usr/lib/systemd/catalog
+	find $(TARGET_DIR)/usr/lib/systemd/system \
+		-name systemd-journal-catalog-update.service -delete
+endef
+
+SYSTEMD_ROOTFS_PRE_CMD_HOOKS += SYSTEMD_RM_SOURCE_CATALOGS_HOOK
+endif
+
 define SYSTEMD_INSTALL_INIT_HOOK
 	$(if $(SYSTEMD_TIMESYNCD_USER),mkdir -p $(TARGET_DIR)/var/lib/systemd/timesync)
 	ln -fs multi-user.target \

@@ -251,6 +251,18 @@ config BR2_PACKAGE_SYSTEMD_IMPORTD
 
 	  http://www.freedesktop.org/software/systemd/man/machinectl.html#Image%20Transfer%20Commands
 
+config BR2_PACKAGE_SYSTEMD_RETAIN_CATALOGS
+	bool "retain source catalog files"
+	help
+	  catalog files are used to provide extended and potentially localized
+	  messages for the journal.
+	  The files reside in /usr/lib/systemd/catalog, but arent used directly,
+	  instead a binary database will be built using these files.
+
+	  Only if the database needs to be rebuilt later they need to be retained.
+
+	  https://www.freedesktop.org/wiki/Software/systemd/catalog/
+
 config BR2_PACKAGE_SYSTEMD_LOCALED
 	bool "enable locale daemon"
 	help
