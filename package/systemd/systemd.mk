@@ -26,13 +26,62 @@ SYSTEMD_DEPENDENCIES = \
 
 SYSTEMD_PROVIDES = udev
 
+# grep '^option.*\bboolean\b' meson_options.txt | grep -v "\bfalse\b" | sed -n "s,[^']*'\([^']*\)'.*,\1,p" | xargs printf '\t%s=false \\\n' | sort
+SYSTEMD_CONF_ALL_OFF = -Dsysvinit-path= \
+	\
+	-Dadm-group=false \
+	-Dbacklight=false \
+	-Dbinfmt=false \
+	-Dbump-proc-sys-fs-file-max=false \
+	-Dbump-proc-sys-fs-nr-open=false \
+	-Dcoredump=false \
+	-Dcreate-log-dirs=false \
+	-Ddefault-kill-user-processes=false \
+	-Defi=false \
+	-Denvironment-d=false \
+	-Dfirstboot=false \
+	-Dgshadow=false \
+	-Dhibernate=false \
+	-Dhostnamed=false \
+	-Dhwdb=false \
+	-Didn=false \
+	-Dima=false \
+	-Dldconfig=false \
+	-Dlink-networkd-shared=false \
+	-Dlink-systemctl-shared=false \
+	-Dlink-udev-shared=false \
+	-Dlocaled=false \
+	-Dlogind=false \
+	-Dmachined=false \
+	-Dmemory-accounting-default=false \
+	-Dnetworkd=false \
+	-Dnss-myhostname=false \
+	-Dnss-systemd=false \
+	-Dportabled=false \
+	-Dpstore=false \
+	-Dquotacheck=false \
+	-Drandomseed=false \
+	-Dresolve=false \
+	-Drfkill=false \
+	-Dsmack=false \
+	-Dsysusers=false \
+	-Dtimedated=false \
+	-Dtimesyncd=false \
+	-Dtmpfiles=false \
+	-Dtpm=false \
+	-Duserdb=false \
+	-Dutmp=false \
+	-Dvconsole=false \
+	-Dwheel-group=false \
+
 SYSTEMD_CONF_OPTS += \
 	-Drootlibdir='/usr/lib' \
 	-Dblkid=true \
 	-Dman=false \
 	-Dima=false \
 	-Dldconfig=false \
-	-Ddefault-hierarchy=hybrid \
+	-Ddefault-dnssec=no \
+	-Ddefault-hierarchy=unified \
 	-Dtests=false \
 	-Dsplit-bin=true \
 	-Dsplit-usr=false \
@@ -46,7 +95,28 @@ SYSTEMD_CONF_OPTS += \
 	-Dumount-path=/usr/bin/umount \
 	-Dnobody-group=nogroup \
 	-Didn=true \
-	-Dnss-systemd=true
+	-Dhomed=false \
+	-Dnss-systemd=true \
+	-Dportabled=false \
+	-Dsysvinit-path= \
+	-Duserdb=false \
+	-Dutmp=false \
+	-Ddbus=false \
+	-Didn=false \
+	-Denvironment-d=false
+
+ifneq ($(BR2_PACKAGE_XSERVER_XORG_SERVER),y)
+SYSTEMD_CLEANFILES += lib/tmpfiles.d/x11.conf etc/X11
+endif
+
+SYSTEMD_CLEANFILES += lib/systemd/system/initrd*
+SYSTEMD_CLEANFILES += lib/systemd/system/systemd-initctl* lib/systemd/system/*/systemd-initctl* lib/systemd/systemd-initctl
+SYSTEMD_CLEANFILES += bin/busctl usr/share/dbus-1
+SYSTEMD_CLEANFILES += bin/systemd-analyze
+SYSTEMD_CLEANFILES += bin/systemd-nspawn
+SYSTEMD_CLEANFILES += bin/timedatectl
+SYSTEMD_CLEANFILES += bin/kernel-install lib/kernel etc/kernel
+SYSTEMD_CLEANFILES += lib/systemd/system/runlevel*.target sbin/runlevel
 
 ifeq ($(BR2_PACKAGE_ACL),y)
 SYSTEMD_DEPENDENCIES += acl
@@ -475,6 +545,7 @@ endif
 
 define SYSTEMD_INSTALL_INIT_HOOK
 	$(if $(SYSTEMD_TIMESYNCD_USER),mkdir -p $(TARGET_DIR)/var/lib/systemd/timesync)
+	-rm -rf $(addprefix $(TARGET_DIR)/,$(SYSTEMD_CLEANFILES))
 	ln -fs multi-user.target \
 		$(TARGET_DIR)/usr/lib/systemd/system/default.target
 endef
@@ -610,6 +681,7 @@ endef
 
 # We need a very minimal host variant, so we disable as much as possible.
 HOST_SYSTEMD_CONF_OPTS = \
+	$(SYSTEMD_CONF_ALL_OFF) \
 	-Dsplit-bin=true \
 	-Dsplit-usr=false \
 	--prefix=/usr \
@@ -667,7 +739,8 @@ HOST_SYSTEMD_CONF_OPTS = \
 	-Dtests=false \
 	-Dglib=false \
 	-Dacl=false \
-	-Dsysvinit-path=''
+	-Dsysvinit-path='' \
+	-Ddbus=false
 
 HOST_SYSTEMD_DEPENDENCIES = \
 	$(BR2_COREUTILS_HOST_DEPENDENCY) \
