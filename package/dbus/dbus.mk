@@ -80,7 +80,8 @@ endef
 DBUS_PRE_INSTALL_TARGET_HOOKS += DBUS_REMOVE_VAR_LIB_DBUS
 
 define DBUS_REMOVE_DEVFILES
-	rm -rf $(TARGET_DIR)/usr/lib/dbus-1.0
+	rm -rf $(TARGET_DIR)/usr/lib/dbus-1.0/include
+	-rmdir $(TARGET_DIR)/usr/lib/dbus-1.0 2>/dev/null
 endef
 
 DBUS_POST_INSTALL_TARGET_HOOKS += DBUS_REMOVE_DEVFILES
