@@ -465,7 +465,15 @@ define SYSTEMD_INSTALL_MACHINEID_HOOK
 	touch $(TARGET_DIR)/etc/machine-id
 endef
 
+define SYSTEMD_ADD_NSSCONFIG_HOOK
+	grep >/dev/null '^passwd:.*systemd' $(TARGET_DIR)/etc/nsswitch.conf || \
+		sed '/^passwd:/ s/$$/ systemd/' $(TARGET_DIR)/etc/nsswitch.conf
+	grep >/dev/null '^group:.*systemd' $(TARGET_DIR)/etc/nsswitch.conf || \
+		sed '/^group:/ s/$$/ systemd/' $(TARGET_DIR)/etc/nsswitch.conf
+endef
+
 SYSTEMD_POST_INSTALL_TARGET_HOOKS += \
+	SYSTEMD_ADD_NSSCONFIG_HOOK \
 	SYSTEMD_INSTALL_INIT_HOOK \
 	SYSTEMD_INSTALL_MACHINEID_HOOK \
 	SYSTEMD_INSTALL_RESOLVCONF_HOOK
