@@ -515,6 +515,7 @@ define SYSTEMD_USERS
 endef
 
 define SYSTEMD_PERMISSIONS
+	/var/log/journal d 2755 0 systemd-journal - - - - -
 	$(if $(SYSTEMD_TIMESYNCD_USER),/var/lib/systemd/timesync d 755 systemd-timesync systemd-timesync - - - - -)
 endef
 
@@ -587,9 +588,11 @@ SYSTEMD_TARGET_FINALIZE_HOOKS += PURGE_LOCALES
 endif
 SYSTEMD_TARGET_FINALIZE_HOOKS += SYSTEMD_UPDATE_CATALOGS
 
+# systemd-tmpfiles will still use host uid/gids, so prevent
+# it from messing up /var/log/journal
 define SYSTEMD_CREATE_TMPFILES_HOOK
 	$(HOST_DIR)/bin/systemd-tmpfiles --root=$(TARGET_DIR) --create --boot \
-		$(addprefix --exclude-prefix=/,dev mnt proc run sys tmp) || :
+		$(addprefix --exclude-prefix=/,dev mnt proc run sys tmp var/log/journal) || :
 endef
 SYSTEMD_ROOTFS_PRE_CMD_HOOKS += SYSTEMD_CREATE_TMPFILES_HOOK
 
