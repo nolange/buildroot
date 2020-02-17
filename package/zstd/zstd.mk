@@ -37,6 +37,9 @@ else
 ZSTD_OPTS += HAVE_LZ4=0
 endif
 
+ZSTD_OPTS += ZSTD_LEGACY_SUPPORT=0
+ZSTD_BUILD_PROGS = zstd-small
+
 ifeq ($(BR2_STATIC_LIBS),y)
 ZSTD_BUILD_LIBS = libzstd.a
 ZSTD_INSTALL_LIBS = install-static
@@ -52,7 +55,10 @@ define ZSTD_BUILD_CMDS
 	$(TARGET_MAKE_ENV) $(TARGET_CONFIGURE_OPTS) $(MAKE) $(ZSTD_OPTS) \
 		-C $(@D)/lib $(ZSTD_BUILD_LIBS)
 	$(TARGET_MAKE_ENV) $(TARGET_CONFIGURE_OPTS) $(MAKE) $(ZSTD_OPTS) \
-		-C $(@D) zstd
+		-C $(@D)/programs allVariants # $(ZSTD_BUILD_PROGS)
+	$(TARGET_MAKE_ENV) $(TARGET_CONFIGURE_OPTS) $(MAKE) $(ZSTD_OPTS) \
+		-C $(@D)/programs allVariants # zstd-release
+
 endef
 
 define ZSTD_INSTALL_STAGING_CMDS
@@ -64,6 +70,7 @@ endef
 define ZSTD_INSTALL_TARGET_CMDS
 	$(TARGET_MAKE_ENV) $(TARGET_CONFIGURE_OPTS) $(MAKE) $(ZSTD_OPTS) \
 		DESTDIR=$(TARGET_DIR) PREFIX=/usr -C $(@D)/programs install
+	install $(@D)/programs/zstd-small $(TARGET_DIR)/usr/bin
 	$(TARGET_MAKE_ENV) $(TARGET_CONFIGURE_OPTS) $(MAKE) $(ZSTD_OPTS) \
 		DESTDIR=$(TARGET_DIR) PREFIX=/usr -C $(@D)/lib $(ZSTD_INSTALL_LIBS)
 endef
@@ -73,7 +80,7 @@ define HOST_ZSTD_BUILD_CMDS
 	$(HOST_MAKE_ENV) $(HOST_CONFIGURE_OPTS) $(MAKE) \
 		-C $(@D)/lib
 	$(HOST_MAKE_ENV) $(HOST_CONFIGURE_OPTS) $(MAKE) \
-		-C $(@D) zstd
+		-C $(@D) zstd-release
 endef
 
 define HOST_ZSTD_INSTALL_CMDS
