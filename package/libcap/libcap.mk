@@ -52,6 +52,7 @@ endef
 define LIBCAP_INSTALL_STAGING_CMDS
 	$(TARGET_MAKE_ENV) $(MAKE) -C $(@D)/libcap $(LIBCAP_MAKE_FLAGS) \
 		DESTDIR=$(STAGING_DIR) prefix=/usr lib=lib $(LIBCAP_MAKE_INSTALL_TARGET)
+	rm $(STAGING_DIR)/usr/lib/libcap.so*
 endef
 
 define LIBCAP_INSTALL_TARGET_CMDS
