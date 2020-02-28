@@ -12,6 +12,7 @@ OPENSSH_CONF_ENV = \
 	LD="$(TARGET_CC)" \
 	LDFLAGS="$(TARGET_CFLAGS)" \
 	LIBS=`$(PKG_CONFIG_HOST_BINARY) --libs openssl`
+OPENSSH_AUTORECONF = YES
 OPENSSH_CONF_OPTS = \
 	--sysconfdir=/etc/ssh \
 	--with-default-path=$(BR2_SYSTEM_DEFAULT_PATH) \
@@ -22,9 +23,20 @@ OPENSSH_CONF_OPTS = \
 	--disable-wtmpx \
 	--disable-strip
 
+ifeq ($(BR2_PACKAGE_SYSTEMD),y)
+OPENSSH_DEPENDENCIES = systemd
+
+OPENSSH_CONF_OPTS += \
+	--with-privsep-path=/run/sshd \
+	--with-pid-dir=/run \
+	--with-systemd
+
+else
+
 define OPENSSH_PERMISSIONS
 	/var/empty d 755 root root - - - - -
 endef
+endif
 
 ifeq ($(BR2_TOOLCHAIN_SUPPORTS_PIE),)
 OPENSSH_CONF_OPTS += --without-pie
@@ -72,7 +84,7 @@ define OPENSSH_INSTALL_SYSTEMD_SYSUSERS
 endef
 else
 define OPENSSH_USERS
-	sshd -1 sshd -1 * /var/empty - - SSH drop priv user
+	sshd -1 sshd -1 * $(if $(BR2_PACKAGE_SYSTEMD),/run/sshd,/var/empty) - - SSH drop priv user
 endef
 endif
 
