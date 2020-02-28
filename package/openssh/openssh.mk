@@ -89,9 +89,9 @@ endef
 endif
 
 define OPENSSH_INSTALL_INIT_SYSTEMD
-	mkdir $(TARGET_DIR)/usr/lib/systemd/system
-	$(INSTALL) -m 644 package/openssh/sshd*.service \
-		$(TARGET_DIR)/usr/lib/systemd/system/
+	mkdir -p $(TARGET_DIR)/usr/lib/systemd/system
+	$(INSTALL) -m 644 package/openssh/sshd*.service package/openssh/sshd.socket \
+		$(TARGET_DIR)/usr/lib/systemd/system/.
 	$(OPENSSH_INSTALL_SYSTEMD_SYSUSERS)
 endef
 

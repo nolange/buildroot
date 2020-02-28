@@ -17,4 +17,4 @@ Type=oneshot
 RemainAfterExit=yes
 
 [Install]
-WantedBy=sshd.service
+WantedBy=sshd.service sshd.socket
