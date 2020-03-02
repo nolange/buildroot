@@ -11,4 +11,6 @@ LIBMNL_INSTALL_STAGING = YES
 LIBMNL_LICENSE = LGPL-2.1+
 LIBMNL_LICENSE_FILES = COPYING
 
+LIBMNL_CONF_OPTS += --disable-shared
+
 $(eval $(autotools-package))
