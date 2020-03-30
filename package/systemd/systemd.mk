@@ -481,6 +481,7 @@ SYSTEMD_ROOTFS_PRE_CMD_HOOKS += SYSTEMD_RM_SOURCE_CATALOGS_HOOK
 endif
 
 define SYSTEMD_INSTALL_INIT_HOOK
+	$(if $(SYSTEMD_TIMESYNCD_USER),mkdir -p $(TARGET_DIR)/var/lib/systemd/timesync)
 	ln -fs multi-user.target \
 		$(TARGET_DIR)/usr/lib/systemd/system/default.target
 endef
@@ -524,6 +525,10 @@ define SYSTEMD_USERS
 	$(SYSTEMD_NETWORKD_USER)
 	$(SYSTEMD_RESOLVED_USER)
 	$(SYSTEMD_TIMESYNCD_USER)
+endef
+
+define SYSTEMD_PERMISSIONS
+	$(if $(SYSTEMD_TIMESYNCD_USER),/var/lib/systemd/timesync d 755 systemd-timesync systemd-timesync - - - - -)
 endef
 
 ifneq ($(call qstrip,$(BR2_TARGET_GENERIC_GETTY_PORT)),)
