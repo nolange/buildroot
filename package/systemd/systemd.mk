@@ -199,6 +199,13 @@ else
 SYSTEMD_CONF_OPTS += -Dlz4=false
 endif
 
+ifeq ($(BR2_PACKAGE_ZSTD),y)
+SYSTEMD_DEPENDENCIES += zstd
+#SYSTEMD_CONF_OPTS += -Dzstd=true
+else
+#SYSTEMD_CONF_OPTS += -Dzstd=false
+endif
+
 ifeq ($(BR2_PACKAGE_LINUX_PAM),y)
 SYSTEMD_DEPENDENCIES += linux-pam
 SYSTEMD_CONF_OPTS += -Dpam=true
