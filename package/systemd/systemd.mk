@@ -110,13 +110,13 @@ SYSTEMD_CLEANFILES += lib/tmpfiles.d/x11.conf etc/X11
 endif
 
 SYSTEMD_CLEANFILES += lib/systemd/system/initrd*
-SYSTEMD_CLEANFILES += lib/systemd/system/systemd-initctl* lib/systemd/system/*/systemd-initctl* lib/systemd/systemd-initctl
+SYSTEMD_CLEANFILES += lib/systemd/system/systemd-initctl* lib/systemd/system/*/systemd-initctl* lib/systemd/systemd-initctl lib/systemd/system/systemd-volatile-root*
 SYSTEMD_CLEANFILES += bin/busctl usr/share/dbus-1
 SYSTEMD_CLEANFILES += bin/systemd-analyze
 SYSTEMD_CLEANFILES += bin/systemd-nspawn
 SYSTEMD_CLEANFILES += bin/timedatectl
 SYSTEMD_CLEANFILES += bin/kernel-install lib/kernel etc/kernel
-SYSTEMD_CLEANFILES += lib/systemd/system/runlevel*.target sbin/runlevel
+SYSTEMD_CLEANFILES += lib/systemd/system/runlevel*.target sbin/runlevel sbin/telinit
 
 ifeq ($(BR2_PACKAGE_ACL),y)
 SYSTEMD_DEPENDENCIES += acl
