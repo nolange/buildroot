@@ -1,0 +1,24 @@
+Description: fix chownat/chmodat when pathname is empty
+ this forwards all supported flags to fstatat,
+ instead of masking them out and causing errors.
+
+--- a/libfakeroot.c
++++ b/libfakeroot.c
+@@ -886,7 +886,7 @@
+   /* If AT_SYMLINK_NOFOLLOW is set in the fchownat call it should
+      be when we stat it. */
+   INT_STRUCT_STAT st;
+-  r=INT_NEXT_FSTATAT(dir_fd, path, &st, (flags & AT_SYMLINK_NOFOLLOW));
++  r=INT_NEXT_FSTATAT(dir_fd, path, &st, (flags & (AT_SYMLINK_NOFOLLOW | AT_EMPTY_PATH | AT_NO_AUTOMOUNT)));
+
+   if(r)
+     return(r);
+@@ -1023,7 +1023,7 @@
+
+   /* If AT_SYMLINK_NOFOLLOW is set in the fchownat call it should
+      be when we stat it. */
+-  r=INT_NEXT_FSTATAT(dir_fd, path, &st, flags & AT_SYMLINK_NOFOLLOW);
++  r=INT_NEXT_FSTATAT(dir_fd, path, &st, flags & (AT_SYMLINK_NOFOLLOW | AT_EMPTY_PATH | AT_NO_AUTOMOUNT));
+
+   if(r)
+     return(r);
