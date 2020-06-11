@@ -663,6 +663,8 @@ HOST_SYSTEMD_DEPENDENCIES = \
 	host-libcap \
 	host-gperf
 
+HOST_SYSTEMD_NINJA_ENV = DESTDIR=$(HOST_DIR)
+
 # Fix RPATH After installation
 # * systemd provides a install_rpath instruction to meson because the binaries
 #   need to link with libsystemd which is not in a standard path
@@ -671,20 +673,11 @@ HOST_SYSTEMD_DEPENDENCIES = \
 # * the original path had been tweaked by buildroot via LDFLAGS to add
 #   $(HOST_DIR)/lib
 # * thus re-tweak rpath after the installation for all binaries that need it
-HOST_SYSTEMD_HOST_TOOLS = \
-	systemd-analyze \
-	systemd-machine-id-setup \
-	systemd-mount \
-	systemd-nspawn \
-	systemctl \
-	udevadm
-
-HOST_SYSTEMD_NINJA_ENV = DESTDIR=$(HOST_DIR)
 
 define HOST_SYSTEMD_FIX_RPATH
-	$(foreach f,$(HOST_SYSTEMD_HOST_TOOLS), \
-		$(HOST_DIR)/bin/patchelf --set-rpath $(HOST_DIR)/lib:$(HOST_DIR)/lib/systemd $(HOST_DIR)/bin/$(f)
-	)
+	cd $(HOST_DIR)/bin && for f in journalctl systemctl udevadm systemd-*; do \
+	  [ ! -x $$f ] || $(HOST_DIR)/bin/patchelf --set-rpath $(HOST_DIR)/lib:$(HOST_DIR)/lib/systemd $$f; \
+	  done
 endef
 HOST_SYSTEMD_POST_INSTALL_HOOKS += HOST_SYSTEMD_FIX_RPATH
 
