@@ -60,8 +60,6 @@ endif
 define SKELETON_INIT_SYSTEMD_INSTALL_TARGET_CMDS
 	mkdir -p $(TARGET_DIR)/home
 	mkdir -p $(TARGET_DIR)/srv
-	mkdir -p $(TARGET_DIR)/var
-	ln -s ../run $(TARGET_DIR)/var/run
 	$(SKELETON_INIT_SYSTEMD_ROOT_RO_OR_RW)
 endef
 
